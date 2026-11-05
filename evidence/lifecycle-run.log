@@ -1,0 +1,19 @@
+PASS     auth/missing-token status=401
+PASS     auth/wrong-token status=401
+PASS     auth/unauth-fast 1120ms
+PASS     auth/probe-needs-auth status=401
+PASS     mcp/initialize 200 1098ms {"name":"edgeone-playwright-mcp","version":"0.1.0"}
+PASS     mcp/tools/list browser_navigate,browser_screenshot,browser_click,browser_type,browser_evaluate,browser_get_content,browser_close,sandbox_info,sandbox_run_command,playwright_native_call,sandbox_extend_timeout
+PASS     lifecycle/reuse-after-init navigate: 200 4805ms
+idle 6min ... 2026-11-05T04:39:00.001Z
+PASS     lifecycle/after-idle-6min getContent: 200 6998ms
+idle to 30min mark ... 2026-11-05T04:45:07.005Z
+PASS     lifecycle/at-30min getContent: 200 5025ms
+PASS     lifecycle/extend-900s {
+  "instanceId": "7ouido76n5n2el2efzskgidbf6knw5ro2ozpogml",
+  "expiresAt": "2026-11-05T13:24:13+08:00"
+}
+idle to 55min mark ... 2026-11-05T05:09:13.743Z
+PASS     lifecycle/at-55min getContent: 200 5895ms
+PASS     lifecycle/close close: 200 3339ms
+PASS     lifecycle/recreate-after-close navigate: 200 4958ms

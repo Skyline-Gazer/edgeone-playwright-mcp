@@ -1,0 +1,40 @@
+{
+  "at": "2026-11-05T03:43:12.451Z",
+  "results": [
+    {
+      "item": "concurrent-3-sessions",
+      "status": "PASS",
+      "detail": "parallel 5547ms; A=5547 B=5136 C=4268"
+    },
+    {
+      "item": "context-isolation-cookie",
+      "status": "PASS",
+      "detail": "B cookie: {\n  \"success\": true,\n  \"data\": \"\"\n}"
+    },
+    {
+      "item": "page-isolation-titles",
+      "status": "PASS",
+      "detail": "A={\n  \"success\": true,\n  \"data\": \"Example Domain\"\n} B={\n  \"success\": true,\n  \"data\": \"Example Domains\"\n}"
+    },
+    {
+      "item": "agentA-close",
+      "status": "PASS",
+      "detail": "2080ms"
+    },
+    {
+      "item": "agentB-survives-A-close",
+      "status": "PASS",
+      "detail": "1880ms"
+    },
+    {
+      "item": "agentA-recreate",
+      "status": "PASS",
+      "detail": "3232ms"
+    },
+    {
+      "item": "distinct-sandbox-instances",
+      "status": "PASS",
+      "detail": "A=c3bvhzzyqmjf B=xv6hw47wedf7"
+    }
+  ]
+}

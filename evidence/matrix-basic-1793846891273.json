@@ -1,0 +1,132 @@
+{
+  "at": "2026-11-05T02:48:11.273Z",
+  "totalMs": 26377,
+  "results": [
+    {
+      "group": "auth",
+      "item": "missing-token",
+      "status": "PASS",
+      "detail": "status=401"
+    },
+    {
+      "group": "auth",
+      "item": "wrong-token",
+      "status": "PASS",
+      "detail": "status=401"
+    },
+    {
+      "group": "auth",
+      "item": "unauth-fast",
+      "status": "PASS",
+      "detail": "1145ms"
+    },
+    {
+      "group": "auth",
+      "item": "probe-needs-auth",
+      "status": "FAIL",
+      "detail": "status=400"
+    },
+    {
+      "group": "mcp",
+      "item": "initialize",
+      "status": "PASS",
+      "detail": "200 1134ms {\"name\":\"edgeone-playwright-mcp\",\"version\":\"0.1.0\"}"
+    },
+    {
+      "group": "mcp",
+      "item": "tools/list",
+      "status": "PASS",
+      "detail": "browser_navigate,browser_screenshot,browser_click,browser_type,browser_evaluate,browser_get_content,browser_close,sandbox_info,sandbox_run_command,sandbox_extend_timeout"
+    },
+    {
+      "group": "basic",
+      "item": "navigate",
+      "status": "FAIL",
+      "detail": "1188ms {\"isError\":true,\"content\":[{\"type\":\"text\",\"text\":\"SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESOURCE_NOT_FOUND, operation=acquire, businessCode=ResourceNotFound, requ"
+    },
+    {
+      "group": "basic",
+      "item": "title-html",
+      "status": "FAIL",
+      "detail": "928ms len=193"
+    },
+    {
+      "group": "dom",
+      "item": "evaluate-h1",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESO"
+    },
+    {
+      "group": "interaction",
+      "item": "read-code-el",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Account not found in current regio"
+    },
+    {
+      "group": "interaction",
+      "item": "click-h1",
+      "status": "PASS",
+      "detail": "isError=true {\"type\":\"text\",\"text\":\"SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESOURCE_NOT_FOUND, o"
+    },
+    {
+      "group": "interaction",
+      "item": "type-h1",
+      "status": "PASS",
+      "detail": "isError=true"
+    },
+    {
+      "group": "screenshot",
+      "item": "viewport",
+      "status": "FAIL",
+      "detail": "766ms mime=undefined len=0"
+    },
+    {
+      "group": "screenshot",
+      "item": "fullpage",
+      "status": "FAIL",
+      "detail": "1147ms len=0"
+    },
+    {
+      "group": "state",
+      "item": "cookie-localstorage",
+      "status": "PARTIAL",
+      "detail": "SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESOURCE_NOT_FOUND, oper"
+    },
+    {
+      "group": "page",
+      "item": "tabs-history",
+      "status": "UNKNOWN",
+      "detail": "no native tool in Route B set; evaluate() can touch window.history only"
+    },
+    {
+      "group": "debug",
+      "item": "console-network",
+      "status": "UNKNOWN",
+      "detail": "sandbox.browser API exposes no console/network listeners"
+    },
+    {
+      "group": "performance",
+      "item": "lcp-observe",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESOURCE_NOT_FOUND, oper"
+    },
+    {
+      "group": "file",
+      "item": "sandbox-tmp-write",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESOURCE_NOT_FOUND, operation=acquire, busin"
+    },
+    {
+      "group": "advanced",
+      "item": "sandbox-info",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESOURCE_NOT_FOUND, operation=acquire, businessCode=ResourceNotFound, requestId=48caa496-8bf5-4e7c-a45d-05013cbf11bb)"
+    },
+    {
+      "group": "security",
+      "item": "ssrf-guard",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Account not found in current region (code=SANDBOX_RESO"
+    }
+  ]
+}

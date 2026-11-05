@@ -1,0 +1,93 @@
+[
+  {
+    "group": "auth",
+    "item": "missing-token",
+    "status": "PASS",
+    "detail": "status=401",
+    "at": "2026-11-05T04:38:48.600Z"
+  },
+  {
+    "group": "auth",
+    "item": "wrong-token",
+    "status": "PASS",
+    "detail": "status=401",
+    "at": "2026-11-05T04:38:50.122Z"
+  },
+  {
+    "group": "auth",
+    "item": "unauth-fast",
+    "status": "PASS",
+    "detail": "1120ms",
+    "at": "2026-11-05T04:38:51.242Z"
+  },
+  {
+    "group": "auth",
+    "item": "probe-needs-auth",
+    "status": "PASS",
+    "detail": "status=401",
+    "at": "2026-11-05T04:38:51.895Z"
+  },
+  {
+    "group": "mcp",
+    "item": "initialize",
+    "status": "PASS",
+    "detail": "200 1098ms {\"name\":\"edgeone-playwright-mcp\",\"version\":\"0.1.0\"}",
+    "at": "2026-11-05T04:38:52.996Z"
+  },
+  {
+    "group": "mcp",
+    "item": "tools/list",
+    "status": "PASS",
+    "detail": "browser_navigate,browser_screenshot,browser_click,browser_type,browser_evaluate,browser_get_content,browser_close,sandbox_info,sandbox_run_command,playwright_native_call,sandbox_extend_timeout",
+    "at": "2026-11-05T04:38:55.118Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "reuse-after-init",
+    "status": "PASS",
+    "detail": "navigate: 200 4805ms",
+    "at": "2026-11-05T04:39:00.000Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "after-idle-6min",
+    "status": "PASS",
+    "detail": "getContent: 200 6998ms",
+    "at": "2026-11-05T04:45:07.003Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "at-30min",
+    "status": "PASS",
+    "detail": "getContent: 200 5025ms",
+    "at": "2026-11-05T05:09:12.035Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "extend-900s",
+    "status": "PASS",
+    "detail": "{\n  \"instanceId\": \"7ouido76n5n2el2efzskgidbf6knw5ro2ozpogml\",\n  \"expiresAt\": \"2026-11-05T13:24:13+08:00\"\n}",
+    "at": "2026-11-05T05:09:13.742Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "at-55min",
+    "status": "PASS",
+    "detail": "getContent: 200 5895ms",
+    "at": "2026-11-05T05:34:20.422Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "close",
+    "status": "PASS",
+    "detail": "close: 200 3339ms",
+    "at": "2026-11-05T05:34:24.511Z"
+  },
+  {
+    "group": "lifecycle",
+    "item": "recreate-after-close",
+    "status": "PASS",
+    "detail": "navigate: 200 4958ms",
+    "at": "2026-11-05T05:34:29.473Z"
+  }
+]

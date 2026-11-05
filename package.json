@@ -1,0 +1,10 @@
+{
+  "name": "edgeone-playwright-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Remote browser MCP on EdgeOne Makers: Bearer-auth MCP Streamable HTTP wrapping context.sandbox Chromium",
+  "devDependencies": {
+    "ws": "^8.22.1"
+  }
+}

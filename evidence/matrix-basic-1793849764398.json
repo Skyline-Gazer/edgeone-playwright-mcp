@@ -1,0 +1,132 @@
+{
+  "at": "2026-11-05T03:36:04.398Z",
+  "totalMs": 43996,
+  "results": [
+    {
+      "group": "auth",
+      "item": "missing-token",
+      "status": "PASS",
+      "detail": "status=401"
+    },
+    {
+      "group": "auth",
+      "item": "wrong-token",
+      "status": "PASS",
+      "detail": "status=401"
+    },
+    {
+      "group": "auth",
+      "item": "unauth-fast",
+      "status": "PASS",
+      "detail": "1041ms"
+    },
+    {
+      "group": "auth",
+      "item": "probe-needs-auth",
+      "status": "PASS",
+      "detail": "status=401"
+    },
+    {
+      "group": "mcp",
+      "item": "initialize",
+      "status": "PASS",
+      "detail": "200 1020ms {\"name\":\"edgeone-playwright-mcp\",\"version\":\"0.1.0\"}"
+    },
+    {
+      "group": "mcp",
+      "item": "tools/list",
+      "status": "PASS",
+      "detail": "browser_navigate,browser_screenshot,browser_click,browser_type,browser_evaluate,browser_get_content,browser_close,sandbox_info,sandbox_run_command,sandbox_extend_timeout"
+    },
+    {
+      "group": "basic",
+      "item": "navigate",
+      "status": "PASS",
+      "detail": "4653ms {\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"success\\\": true,\\n  \\\"data\\\": {\\n    \\\"url\\\": \\\"https://example.com/\\\",\\n    \\\"title\\\": \\\"Example Domain\\\",\\n    \\\"status\\\": 200\\n  }\\n}\"}]}"
+    },
+    {
+      "group": "basic",
+      "item": "title-html",
+      "status": "PASS",
+      "detail": "2502ms len=2076"
+    },
+    {
+      "group": "dom",
+      "item": "evaluate-h1",
+      "status": "FAIL",
+      "detail": "SandboxNotAvailableError: Sandbox browser operation failed: evaluate [instanceId"
+    },
+    {
+      "group": "interaction",
+      "item": "read-code-el",
+      "status": "PASS",
+      "detail": "{\n  \"success\": true,\n  \"data\": \"POST /mcp\"\n}"
+    },
+    {
+      "group": "interaction",
+      "item": "click-h1",
+      "status": "PASS",
+      "detail": "isError=undefined {\"type\":\"text\",\"text\":\"{\\n  \\\"success\\\": true\\n}\"}"
+    },
+    {
+      "group": "interaction",
+      "item": "type-h1",
+      "status": "PASS",
+      "detail": "isError=true"
+    },
+    {
+      "group": "screenshot",
+      "item": "viewport",
+      "status": "PASS",
+      "detail": "1990ms mime=image/png len=36628"
+    },
+    {
+      "group": "screenshot",
+      "item": "fullpage",
+      "status": "PASS",
+      "detail": "1956ms len=36628"
+    },
+    {
+      "group": "state",
+      "item": "cookie-localstorage",
+      "status": "PARTIAL",
+      "detail": "{\n  \"success\": true,\n  \"data\": \"{\\\"c\\\":\\\"poc=1\\\",\\\"l\\\":\\\"1\\\"}\"\n}"
+    },
+    {
+      "group": "page",
+      "item": "tabs-history",
+      "status": "UNKNOWN",
+      "detail": "no native tool in Route B set; evaluate() can touch window.history only"
+    },
+    {
+      "group": "debug",
+      "item": "console-network",
+      "status": "UNKNOWN",
+      "detail": "sandbox.browser API exposes no console/network listeners"
+    },
+    {
+      "group": "performance",
+      "item": "lcp-observe",
+      "status": "PARTIAL",
+      "detail": "{\n  \"success\": true,\n  \"data\": \"{\\\"lcp\\\":60}\"\n}"
+    },
+    {
+      "group": "file",
+      "item": "sandbox-tmp-write",
+      "status": "PASS",
+      "detail": "{\\n  \"stdout\": \"poc-file\\n\",\\n  \"stderr\": \"\",\\n  \"exitCode\": 0\\n}"
+    },
+    {
+      "group": "advanced",
+      "item": "sandbox-info",
+      "status": "PASS",
+      "detail": "{\n  \"info\": {\n    \"instanceId\": \"vd4hdhrqqtef2vuoe7jcgvkrschqfu2r72pu6vh5\",\n    \"sandboxToken\": \"sit_G2Z4la6cr5DPy6vYPsifpo_F8-DT98kCxFJabFj4zPg\",\n    \"expiresAt\": \"2026-11-05T11:40:28+08:00\",\n    \"sa"
+    },
+    {
+      "group": "security",
+      "item": "ssrf-guard",
+      "status": "PASS",
+      "detail": "blocked: private/loopback/non-http target"
+    }
+  ]
+}
