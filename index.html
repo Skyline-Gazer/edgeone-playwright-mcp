@@ -1,14 +1,152 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>edgeone-playwright-mcp</title>
-    <style>body{font:16px/1.6 system-ui,sans-serif;max-width:40em;margin:4em auto;padding:0 1em}</style>
-  </head>
-  <body>
-    <h1>edgeone-playwright-mcp</h1>
-    <p>MCP Streamable HTTP endpoint: <code>POST /mcp</code> with <code>Authorization: Bearer &lt;token&gt;</code>.</p>
-    <p>Diagnostics: <code>POST /probe</code> (same Bearer header).</p>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A self-hosted remote Chromium MCP endpoint on EdgeOne Makers. Bearer-authenticated browser tools for coding agents.">
+  <meta name="color-scheme" content="dark">
+  <title>EdgeOne Browser MCP — Remote Chromium for coding agents</title>
+  <style>
+    :root{color-scheme:dark;--bg:#08111a;--panel:#101f2a;--panel2:#122735;--line:#27414e;--ink:#eaf3f4;--muted:#aec2c8;--teal:#8de6ca;--lime:#d9ed9e;--warning:#ffd69a;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 70% -8%,#1c4050 0,transparent 38%),var(--bg);color:var(--ink);line-height:1.65}
+    a{color:var(--teal)}a:focus-visible,button:focus-visible{outline:3px solid var(--lime);outline-offset:3px}button{font:inherit}
+    .skip{position:absolute;left:12px;top:-100px;background:var(--lime);color:#08111a;padding:8px 14px;z-index:10}.skip:focus{top:12px}
+    .wrap{width:min(1130px,calc(100% - 40px));margin:0 auto}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:25px 0;border-bottom:1px solid var(--line)}
+    .brand{color:var(--ink);text-decoration:none;font-weight:800;letter-spacing:-.03em;font-size:1.02rem;display:inline-flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:35px;height:35px;border-radius:11px;background:var(--teal);color:#072320;font-weight:900}
+    .navlinks{display:flex;gap:22px;flex-wrap:wrap}.navlinks a{color:var(--muted);text-decoration:none;font-size:.9rem}.navlinks a:hover{color:var(--ink)}
+    .hero{padding:92px 0 74px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(290px,.8fr);gap:55px;align-items:center}
+    .eyebrow{font-size:.77rem;font-weight:750;text-transform:uppercase;letter-spacing:.16em;color:var(--teal)}
+    h1{font-size:clamp(2.7rem,6vw,5.05rem);line-height:1.09;letter-spacing:-.06em;margin:16px 0 23px;max-width:740px}h1 span{color:var(--teal)}
+    .lead{font-size:1.14rem;color:var(--muted);max-width:600px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .btn{border:1px solid #5b8a8c;border-radius:12px;padding:12px 18px;font-weight:700;text-decoration:none;display:inline-block;background:transparent;color:var(--ink);cursor:pointer}.btn.primary{border-color:var(--teal);background:var(--teal);color:#063027}.btn:hover{filter:brightness(1.1)}
+    .hint{color:var(--muted);font-size:.84rem;margin-top:20px}.panel{background:linear-gradient(160deg,#152e3b,#10202b);border:1px solid var(--line);border-radius:18px;padding:25px;box-shadow:0 18px 46px #0003}
+    .terminal-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.8rem;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:15px}
+    .dots{letter-spacing:.25em;color:var(--teal)}.terminal code{font-size:.87rem;white-space:pre-wrap;overflow-wrap:anywhere;color:#e8f6d1}.comment{color:#9eb6b9}
+    .terminal .badge{border:1px solid #517a74;color:var(--teal);padding:3px 8px;border-radius:20px;font-size:.73rem}
+    section{padding:49px 0}.section-head{max-width:760px;margin-bottom:26px}h2{font-size:clamp(1.7rem,3.5vw,2.3rem);line-height:1.2;letter-spacing:-.04em;margin:9px 0}h3{font-size:1.15rem;letter-spacing:-.02em;margin:0 0 10px}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{border:1px solid var(--line);background:#0e1e28;border-radius:15px;padding:22px}.card p{color:var(--muted);margin-bottom:0;font-size:.94rem}.n{display:inline-grid;place-items:center;width:31px;height:31px;border-radius:9px;background:#24504f;color:var(--teal);font-weight:800;margin-bottom:17px}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:16px}.codecard{background:#0b1b25;border:1px solid var(--line);border-radius:15px;overflow:hidden;min-width:0}
+    .codehead{display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid var(--line);padding:14px 18px;font-size:.92rem;font-weight:700}
+    .copy{color:var(--teal);background:transparent;border:1px solid #426d6a;border-radius:8px;padding:5px 11px;font-size:.8rem;cursor:pointer}
+    pre{margin:0;padding:19px;overflow-x:auto;color:#e1eccc;font-size:.82rem;line-height:1.7;tab-size:2}code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .statrow{display:flex;flex-wrap:wrap;gap:11px;margin:23px 0}.stat{border:1px solid var(--line);border-radius:9px;padding:7px 11px;color:var(--muted);font-size:.84rem}.stat strong{color:var(--ink)}
+    .notice{border:1px solid #705d42;background:#241f1a;border-radius:14px;padding:18px 22px;color:#ffe0b2;margin-top:18px}.notice strong{color:var(--warning)}
+    .links{display:flex;gap:20px;flex-wrap:wrap;margin-top:22px}.links a{color:var(--teal)}
+    footer{border-top:1px solid var(--line);margin-top:44px;padding:25px 0 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--muted);font-size:.85rem}
+    @media(max-width:830px){.hero{grid-template-columns:1fr;padding:62px 0 36px;gap:28px}.grid{grid-template-columns:1fr}.split{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.navlinks{gap:16px}section{padding:34px 0}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <div class="wrap">
+    <header class="nav">
+      <a class="brand" href="#top"><span class="mark" aria-hidden="true">E</span> EdgeOne Browser MCP</a>
+      <nav class="navlinks" aria-label="Main navigation">
+        <a href="#features">Capabilities</a><a href="#setup">Quick start</a><a href="#limits">Boundaries</a>
+        <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp">GitHub</a>
+      </nav>
+    </header>
+    <main id="main">
+      <div class="hero" id="top">
+        <div>
+          <div class="eyebrow">Remote browser infrastructure · Self-hosted prototype</div>
+          <h1>A real browser for <span>every coding agent.</span></h1>
+          <p class="lead">Run Chromium in an EdgeOne Makers Sandbox. Connect through an authenticated HTTP MCP endpoint and keep your local environment free of browser dependencies.</p>
+          <div class="actions">
+            <a class="btn primary" href="#setup">Connect your agent</a>
+            <a class="btn" href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp">View source</a>
+          </div>
+          <p class="hint">Bring your own EdgeOne deployment and Bearer token. This page is documentation, not an open public browser service.</p>
+        </div>
+        <div class="panel terminal" aria-label="Connection example">
+          <div class="terminal-head"><span><span class="dots" aria-hidden="true">● ● ●</span> &nbsp; MCP endpoint</span><span class="badge">Bearer required</span></div>
+          <code><span class="comment"># Your agent's configuration</span>
+endpoint: https://YOUR-DEPLOYMENT/mcp
+transport: streamable-http
+auth: Bearer &lt;YOUR_TOKEN&gt;
+session: &lt;UNIQUE_CONVERSATION_ID&gt;
+
+<span class="comment"># Browser runs in EdgeOne Sandbox</span>
+agent → MCP → sandbox → Chromium</code>
+        </div>
+      </div>
+      <section id="features">
+        <div class="section-head"><div class="eyebrow">What it does</div><h2>Browser operations, without a local Chromium install.</h2><p class="muted">The public interface exposes direct browser controls and an optional native Playwright MCP relay. The relay is not yet a drop-in replacement for every native MCP tool.</p></div>
+        <div class="grid">
+          <article class="card"><span class="n">01</span><h3>Interact with real pages</h3><p>Navigate, inspect HTML, click, type, evaluate and capture screenshots in cloud Chromium.</p></article>
+          <article class="card"><span class="n">02</span><h3>Connect AI coding agents</h3><p>Standard MCP JSON-RPC over HTTPS, with Bearer authorization and separate conversation IDs for independent sessions.</p></article>
+          <article class="card"><span class="n">03</span><h3>Use native Playwright tools</h3><p>A sandbox-local Microsoft Playwright MCP server makes extra tools discoverable through a relay, including accessibility snapshots.</p></article>
+        </div>
+        <div class="statrow">
+          <span class="stat"><strong>11</strong> current top-level tools, including privileged operations</span>
+          <span class="stat"><strong>25</strong> native tool names behind relay</span>
+          <span class="stat"><strong>18/21</strong> baseline checks PASS; 2 unknown, 1 partial</span>
+        </div>
+      </section>
+      <section id="setup">
+        <div class="section-head"><div class="eyebrow">Get connected</div><h2>Two headers. One browser endpoint.</h2><p class="muted">Deploy the repository into your own EdgeOne account, configure a strong MCP_BEARER_TOKEN, and supply your distinct client conversation ID. Never commit actual tokens.</p></div>
+        <div class="split">
+          <div class="codecard">
+            <div class="codehead"><span>Codex · config.toml</span><button class="copy" type="button" data-copy="codex-config" aria-label="Copy Codex configuration">Copy</button></div>
+            <pre id="codex-config">[mcp_servers.edgeone_browser]
+url = "https://YOUR-DEPLOYMENT/mcp"
+http_headers = { "Authorization" = "Bearer &lt;TOKEN&gt;", "makers-conversation-id" = "codex-unique" }</pre>
+          </div>
+          <div class="codecard">
+            <div class="codehead"><span>OpenCode · opencode.json</span><button class="copy" type="button" data-copy="opencode-config" aria-label="Copy OpenCode configuration">Copy</button></div>
+            <pre id="opencode-config">{
+  "mcp": {
+    "edgeone_browser": {
+      "type": "remote",
+      "url": "https://YOUR-DEPLOYMENT/mcp",
+      "headers": {
+        "Authorization": "Bearer &lt;TOKEN&gt;",
+        "makers-conversation-id": "opencode-unique"
+      },
+      "enabled": true
+    }
+  }
+}</pre>
+          </div>
+        </div>
+        <p class="muted">Adapt the snippets to your installed agent version and preserve its existing configuration. For deployment and a curl example, see the <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp#deploy">README</a>.</p>
+      </section>
+      <section id="limits">
+        <div class="section-head"><div class="eyebrow">Known boundaries</div><h2>Built for development workflows, not anonymous browsing.</h2></div>
+        <div class="grid">
+          <article class="card"><h3>Short-lived instances</h3><p>One sandbox stayed responsive for at least 56 minutes in testing. Lifecycle, account quotas and exact free usage are platform-controlled.</p></article>
+          <article class="card"><h3>Native relay overhead</h3><p>External CDP WebSocket was rejected by the platform, so native Playwright operations pass through a sandbox-internal relay and may add latency.</p></article>
+          <article class="card"><h3>Private single-tenant service</h3><p>Conversation IDs are client-supplied routing keys, not independent credentials. Treat the same Bearer token as one trust domain.</p></article>
+        </div>
+        <div class="notice"><strong>Security note:</strong> Current PoC tools include privileged sandbox command execution and unsafe browser code paths. Use only with trusted agents and controlled test targets until the default tool surface is hardened. Never expose your Bearer token or a CDP session URL.</div>
+        <div class="links">
+          <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp/blob/dev/SECURITY.md">Security notes</a>
+          <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp/blob/dev/CAPABILITIES.md">Capabilities</a>
+          <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp/blob/dev/LIMITS.md">Limits</a>
+          <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp/issues">Roadmap & issues</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>EdgeOne Browser MCP · Open source prototype</span><span>Not affiliated with Microsoft or Tencent Cloud · <a href="https://github.com/Skyline-Gazer/edgeone-playwright-mcp">Source code</a></span></footer>
+  </div>
+  <script>
+    document.querySelectorAll("[data-copy]").forEach(function (button) {
+      button.addEventListener("click", async function () {
+        const source = document.getElementById(button.getAttribute("data-copy"));
+        if (!source) return;
+        try {
+          await navigator.clipboard.writeText(source.textContent.trim());
+          button.textContent = "Copied";
+          window.setTimeout(function () { button.textContent = "Copy"; }, 1800);
+        } catch {
+          button.textContent = "Select text";
+          source.setAttribute("tabindex", "-1");
+          source.focus();
+        }
+      });
+    });
+  </script>
+</body>
 </html>

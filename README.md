@@ -1,65 +1,133 @@
-# edgeone-playwright-mcp
+# EdgeOne Browser MCP
 
-Remote browser MCP on **EdgeOne Makers**: Bearer-auth MCP Streamable HTTP endpoint (`POST /mcp`) — 10 first-class tools over `context.sandbox`, plus the **native Microsoft `@playwright/mcp` toolset (25 tools)** relayed from inside the sandbox. No extra server, no database.
+A **self-hosted remote Chromium MCP endpoint** on EdgeOne Makers. Designed for
+AI coding agents such as Codex and OpenCode that benefit from an external
+browser. This is a private, experimental service, **not** a general public
+browser proxy or unlimited free compute offering.
 
-**Live**: `https://edgeone-playwright-mcp-ov.edgeone.dev` (deployed under an EdgeOne account, overseas area)
+- **Live PoC:** https://edgeone-playwright-mcp-ov.edgeone.dev
+- **Source:** https://github.com/Skyline-Gazer/edgeone-playwright-mcp
+- **Landing:** index.html (static, no build step)
+- **Engineering decisions:** docs/ARCHITECTURE.md
+- **ADS:** pinned .ads submodule at v0.7.0 / 42ba05c6b6707690702689988c352d4d3a3cde6e
+- **Tasks:** GitHub Issues; Project bootstrap at scripts/bootstrap-project.sh
 
-| Achievement | Status |
-|---|---|
-| Level 2 — Browser MCP (auth + sessions + tools) | ✅ **verified live** (21/21 + 7/7 checks) |
-| Level 3 — Full Playwright MCP (25 native tools) | ✅ via `playwright_native_call` relay (+1–3 s/hop) |
+## Capabilities and verified baseline
 
-## Architecture
+The outer Streamable HTTP MCP endpoint exposes 11 first-class tools, including
+sandbox control and command execution. A sandbox-local Microsoft Playwright MCP
+server exposes an additional set of approximately 25 native tool names through
+a **single** generic playwright_native_call relay. They are not first-class
+independent tools on the outer MCP surface.
 
+The published baseline evidence for the 21-check matrix is **18 PASS,
+2 UNKNOWN, 1 PARTIAL**, not 21 PASS. Three separate conversations and the
+short-session isolation cases were exercised. An instance remained responsive
+for >=56 minutes; exact Sandbox free usage must be measured in the console.
+
+The full native tool list, current route differences and limitations are in
+CAPABILITIES.md, LIMITS.md, REPORT.md and SECURITY.md. Some documents are
+historical PoC evidence and may contain overbroad claims; security/evidence
+correction is tracked as P0 work.
+
+## Agent connection
+
+Your deployment must have its own randomly generated MCP_BEARER_TOKEN. Send it
+as a header, never as a query string. Use **a different makers-conversation-id**
+for each independent Agent/session; the ID by itself is not a credential.
+
+Codex (append to ~/.codex/config.toml):
+
+```toml
+[mcp_servers.edgeone_browser]
+url = "https://YOUR-DEPLOYMENT/mcp"
+http_headers = { "Authorization" = "Bearer <TOKEN>", "makers-conversation-id" = "codex-main" }
 ```
-Agent (Codex / OpenCode / any MCP client)
-   │  POST /mcp  ·  Authorization: Bearer <token>  ·  JSON-RPC 2.0
-   ▼
-Makers Agent runtime (agents/mcp.ts)
-   ├─ Route B tools ────────────── context.sandbox.browser (managed Chromium)
-   └─ playwright_native_call ───── commands.run curl tunnel
-                                     └─ @playwright/mcp (sandbox-internal, :8931)
-                                          └─ CDP 127.0.0.1:9222 → Chromium (Chrome 152)
+
+OpenCode (merge under mcp in ~/.config/opencode/opencode.json):
+
+```json
+{
+  "edgeone_browser": {
+    "type": "remote",
+    "url": "https://YOUR-DEPLOYMENT/mcp",
+    "headers": {
+      "Authorization": "Bearer <TOKEN>",
+      "makers-conversation-id": "opencode-main"
+    },
+    "enabled": true
+  }
+}
 ```
 
-Why the relay: external CDP WebSocket is rejected by the platform (401), and `getHost(port)` cannot
-expose arbitrary sandbox ports (`310508`) — both verified. See `REPORT.md` for the decision record.
+MCP clients must support JSON-RPC over HTTP POST and Bearer headers. The native
+25-tool relay is invoked with playwright_native_call and explicit method/params.
 
-## Deploy
+## Local development
+
+Requirements: Git, Node.js 20+, npm, and EdgeOne CLI for deployment only.
 
 ```bash
-export PAGES_SOURCE=skills
-cd ~/workspace/edgeone-playwright-mcp
-edgeone makers deploy -n edgeone-playwright-mcp-ov -a overseas   # overseas → public edgeone.dev domain
-edgeone makers env set MCP_BEARER_TOKEN "<crypto-random-token>"  # then redeploy once
+git clone --recurse-submodules https://github.com/Skyline-Gazer/edgeone-playwright-mcp.git
+cd edgeone-playwright-mcp
+git switch dev
+git submodule update --init .ads
+npm ci
+npm test
 ```
 
-> `global` area lands on `*.edgeone.cool`, which forces signed-URL access (`eo_time missing` 401 for plain clients) — use `-a overseas`.
+To prepare a clean checkout of the *current* PoC, copy
+agents/_auth.ts.example to agents/_auth.ts; the file is gitignored.
+This does not grant deployment access. The project has a P0 task to remove
+the insecure baked-token fallback and make production fail closed.
 
-## Use
+Do not run a deploy casually: it may change a live EdgeOne service. After
+checking account permissions and provisioning MCP_BEARER_TOKEN as an
+environment secret, the currently documented EdgeOne deployment command is:
 
 ```bash
-curl -sS -X POST https://edgeone-playwright-mcp-ov.edgeone.dev/mcp \
-  -H "Authorization: Bearer $TOKEN" -H "makers-conversation-id: my-session" \
-  -H 'Content-Type: application/json' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"browser_navigate","arguments":{"url":"https://example.com"}}}'
+edgeone makers deploy -n YOUR-PROJECT -a overseas
 ```
 
-- Route B tools: `browser_navigate` `browser_screenshot` `browser_click` `browser_type` `browser_evaluate` `browser_get_content` `browser_close` `sandbox_info` `sandbox_run_command` `sandbox_extend_timeout`
-- Full native set via `playwright_native_call` `{method, params}` — e.g. `tools/list`, then `tools/call` with `browser_snapshot`, `browser_tabs`, `browser_file_upload`, …
-
-## Tests
+A live test requires an authorized endpoint and secret:
 
 ```bash
-node tests/mcp-client.mjs "$BASE" "$TOKEN" basic      # auth + protocol + capability matrix (21)
-node tests/multi-agent.mjs "$BASE" "$TOKEN"           # concurrency + isolation (7)
-node tests/mcp-client.mjs "$BASE" "$TOKEN" lifecycle  # idle 6/30/55 min, extendTimeout, close+recreate
+node tests/mcp-client.mjs "$BASE" "$TOKEN" basic
+node tests/multi-agent.mjs "$BASE" "$TOKEN"
 ```
 
-Client configs (Codex / OpenCode / curl): `REPORT.md` §接入示例.
+Do not commit unredacted results under evidence/. The present scripts write
+raw diagnostic content; that is a known P0 issue.
 
-## Cleanup / operations
+## Engineering workflow
 
-- Token rotation: `edgeone makers env set MCP_BEARER_TOKEN <new>` → redeploy.
-- Project console: `https://console.tencentcloud.com/edgeone/pages/project/makers-ostgmsajojne`
-- The in-sandbox @playwright/mcp process self-heals: relay checks health and restarts `npx -y @playwright/mcp@latest --cdp-endpoint http://127.0.0.1:9222 --port 8931` when missing.
+GitHub primary. Work on topic branches, open Issue-linked PRs to dev, and use
+a separate reviewed PR to promote dev to master. No automatic deployment or
+new required dev CI gates. See AGENTS.md for the ADS Lite working agreement.
+
+For a GitHub Projects board with native sub-issues and Phase/Priority fields,
+run scripts/bootstrap-project.sh with an authenticated gh CLI having project
+scope. The board setup script does not deploy the application.
+
+## Security and limits
+
+- Bearer protects current MCP and probe endpoints, but today's privileged
+  shell and unsafe browser operations require a trusted single-tenant Agent.
+- Reusing a conversation ID with the same token can share browser state.
+- A private-IP URL guard on browser_navigate does not limit shell execution,
+  page JavaScript evaluation, DNS rebinding or alternate browser navigation.
+- CDP WebSocket direct access failed in testing; native commands use a local
+  relay, with latency overhead.
+- Sandbox state is ephemeral; observed >=56 minutes is not a continuity SLA.
+- Free-tier usage is **not** proven to cover 60–120 browser hours per month.
+  Use actual allocated-memory GB-s and account counters before forecasting.
+- Historic public evidence requires secret review; never treat it as sanitized
+  simply because the top-level API token was removed.
+
+See SECURITY.md and GitHub Issues #1–#14 for baseline remediation and scope.
+
+## License and contribution
+
+ADS v0.7.0 is separately licensed under MIT in the pinned .ads directory.
+This repository's application license has not yet been selected; no license
+grant is implied by the public visibility of this repository.
