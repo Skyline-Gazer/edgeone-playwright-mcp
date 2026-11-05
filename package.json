@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Remote browser MCP on EdgeOne Makers: Bearer-auth MCP Streamable HTTP wrapping context.sandbox Chromium",
+  "description": "Remote browser MCP on EdgeOne Makers: Bearer-auth Streamable HTTP over Chromium",
+  "scripts": {
+    "test": "node --test tests/landing.test.mjs"
+  },
   "devDependencies": {
     "ws": "^8.22.1"
   }
